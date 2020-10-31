@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-//#include <ext/pb_ds/assoc_container.hpp>
-//#include <ext/pb_ds/tree_policy.hpp>
-//#include <ext/rope>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/rope>
 
 #define ll long long
 #define ll128 __uint128_t
@@ -38,8 +38,8 @@
 #define inf (mod * mod)
 
 using namespace std;
-//using namespace __gnu_cxx;
-//using namespace __gnu_pbds;
+using namespace __gnu_cxx;
+using namespace __gnu_pbds;
 
 ostream & operator << (ostream & out, vll & a) {
     for(auto i : a) out << i << " ";
@@ -63,27 +63,39 @@ ll id[N][N];
 void bfs(ll x, ll y, ll mx, ll idd) {
     queue<pll> q;
     vvll d(n + 1, vll(m + 1, 1e18));
-    d[x][y] = 0;
-    q.push(make_pair(x, y));
+    vvll color(n + 1, vll(m + 1, 0));
+    rep(i, 0, p) {
+        color[prt[i].x][prt[i].y] = i + 1;
+        q.push(make_pair(prt[i].x, prt[i].y));
+        d[prt[i].x][prt[i].y] = 0;
+    }
 
     while(!q.empty()) {
         auto fr = q.front();
         q.pop();
-        if (id[fr.first][fr.second] >= 0) id[fr.first][fr.second] = idd;
 
         rep(di, -1, 2) {
             rep(dj, -1, 2) {
                 if (di * di + dj * dj != 1) continue;
                 ll ni = fr.first + di;
                 ll nj = fr.second + dj;
-                if (ni >= 0 && ni < n && nj >= 0 && nj < m && id[ni][nj] >= 0) {
+                if (ni >= 0 && ni < n && nj >= 0 && nj < m && !color[ni][nj]) {
                     if (d[fr.first][fr.second] + 1 < d[ni][nj]) {
+                        color[ni][nj] = color[fr.first][fr.second];
                         d[ni][nj] = d[fr.first][fr.second] + 1;
                         if (d[ni][nj] < mx) {
                             q.push(make_pair(ni, nj));
                         }
                     }
                 }
+            }
+        }
+    }
+
+    rep(i, 0, n) {
+        rep(j, 0, m) {
+            if (id[i][j] != -1) {
+                id[i][j] = color[i][j];
             }
         }
     }
@@ -134,16 +146,18 @@ void findId() {
 
     if (check(l)) l++;
     check(l);
-
-
-//    cout << endl;
-//    rep(i, 0, n) {
-//        rep(j, 0, m) {
-//            cout << id[i][j] << " ";
-//        }
-//        cout << endl;
-//    }
-//    cout << endl;
+    ll test = 0;
+    if (test) {
+        cout << "l : " << l << endl;
+        cout << endl;
+        rep(i, 0, n) {
+            rep(j, 0, m) {
+                cout << id[i][j] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
 }
 
 int findValue(vector<string> &ans) {
@@ -248,11 +262,10 @@ void print() {
 }
 
 int main() {
-    FILE;
+    // FILE
     read();
     findId();
     print();
     
     return 0;
 }
-
