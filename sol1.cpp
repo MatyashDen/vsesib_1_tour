@@ -146,16 +146,18 @@ void findId() {
 
     if (check(l)) l++;
     check(l);
-
-    cout << "l : " << l << endl;
-    cout << endl;
-    rep(i, 0, n) {
-        rep(j, 0, m) {
-            cout << id[i][j] << " ";
+    ll test = 0;
+    if (test) {
+        cout << "l : " << l << endl;
+        cout << endl;
+        rep(i, 0, n) {
+            rep(j, 0, m) {
+                cout << id[i][j] << " ";
+            }
+            cout << endl;
         }
         cout << endl;
     }
-    cout << endl;
 }
 
 int findValue(vector<string> &ans) {
@@ -260,7 +262,7 @@ void print() {
 }
 
 int main() {
-
+    // FILE
     read();
     findId();
     print();
