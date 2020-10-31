@@ -254,8 +254,21 @@ vector<string> findAns() {
 void print() {
     vector<string> ans = findAns();
  
+    int val = findValue(ans);
+    
     cout << findValue(ans) << endl;
  
+    string def = "";
+    for (int i = 0; i < val; ++i) {
+        def += 'W';
+    }
+    
+//    cout << ans.size() << ' ' << k << endl;
+    
+    while ((int)ans.size() < k) {
+        ans.push_back(def);
+    }
+    
     for (string s : ans) {
         cout << s << endl;
     }
