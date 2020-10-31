@@ -103,7 +103,8 @@ void bfs(ll x, ll y, ll mx, ll idd) {
 
 void read() {
     cin >> n >> m >> k >> p;
-
+    
+    swap(n, m);
     rep(i, 0, p) {
         cin >> prt[i].x >> prt[i].y;
         swap(prt[i].x, prt[i].y);
