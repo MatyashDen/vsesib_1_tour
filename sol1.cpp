@@ -37,6 +37,8 @@
 #define mod (ll)(1e9 + 7)
 #define inf (mod * mod)
 
+#define int long long
+
 using namespace std;
 //using namespace __gnu_cxx;
 //using namespace __gnu_pbds;
@@ -218,7 +220,47 @@ string findWay(portal a, portal b, int portalId) {
  
     return ans;
 }
- 
+
+void fixId() {
+//    for (int i = 0; i < n; ++i) {
+//        for (int j = 0; j < m; ++j) {
+//            cout << id[i][j] << ' ';
+//        }
+//        cout << endl;
+//    } cout << endl;
+    queue<portal> q;
+    auto upd = [&](int x, int y, portal pos) {
+        if (x >= 0 && x < n && y >= 0 && y < m) {
+            if (id[x][y] > k) {
+                id[x][y] = id[pos.x][pos.y];
+                q.push({x, y});
+            }
+        }
+    };
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            if (id[i][j] <= k && id[i][j] != -1) {
+                q.push({i, j});
+            }
+        }
+    }
+    while (!q.empty()) {
+        auto to = q.front(); q.pop();
+        int x = to.x, y = to.y;
+        portal pos = {x, y};
+        upd(x + 1, y, pos);
+        upd(x - 1, y, pos);
+        upd(x, y + 1, pos);
+        upd(x, y - 1, pos);
+    }
+//    for (int i = 0; i < n; ++i) {
+//        for (int j = 0; j < m; ++j) {
+//            cout << id[i][j] << ' ';
+//        }
+//        cout << endl;
+//    }
+}
+
 vector<string> findAns() {
     vector<string> ans;
  
@@ -284,18 +326,23 @@ void print() {
         ans.push_back(def);
     }
     
+    int sz = (int)ans.size();
+    sz = min(sz, k);
+    
     int cnt = 0;
-    for (string s : ans) {
+    for (int i = 0; i < sz; ++i) {
+        string s = ans[i];
 //        checkAns(prt[cnt], s);
         ++cnt;
         cout << s << endl;
     }
 }
 
-int main() {
+signed main() {
     // FILE
     read();
     findId();
+    fixId();
     print();
     
     return 0;
