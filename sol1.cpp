@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-#include <ext/rope>
+//#include <ext/pb_ds/assoc_container.hpp>
+//#include <ext/pb_ds/tree_policy.hpp>
+//#include <ext/rope>
 
 #define ll long long
 #define ll128 __uint128_t
@@ -38,8 +38,8 @@
 #define inf (mod * mod)
 
 using namespace std;
-using namespace __gnu_cxx;
-using namespace __gnu_pbds;
+//using namespace __gnu_cxx;
+//using namespace __gnu_pbds;
 
 ostream & operator << (ostream & out, vll & a) {
     for(auto i : a) out << i << " ";
