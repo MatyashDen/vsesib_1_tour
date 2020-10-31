@@ -66,7 +66,7 @@ void bfs(ll x, ll y, ll mx, ll idd) {
     vvll color(n + 1, vll(m + 1, 0));
     rep(i, 0, p) {
         color[prt[i].x][prt[i].y] = i + 1;
-        q.push(make_pair(prt[i].x, prt[i].y));
+        if (mx > 0) q.push(make_pair(prt[i].x, prt[i].y));
         d[prt[i].x][prt[i].y] = 0;
     }
 
@@ -103,7 +103,7 @@ void bfs(ll x, ll y, ll mx, ll idd) {
 
 void read() {
     cin >> n >> m >> k >> p;
-
+    swap(n, m);
     rep(i, 0, p) {
         cin >> prt[i].x >> prt[i].y;
         swap(prt[i].x, prt[i].y);
