@@ -106,6 +106,7 @@ void read() {
 
     rep(i, 0, p) {
         cin >> prt[i].x >> prt[i].y;
+        swap(prt[i].x, prt[i].y);
         id[prt[i].x][prt[i].y] = -1;
     }
 }
@@ -251,6 +252,19 @@ vector<string> findAns() {
     return ans;
 }
 
+void checkAns(portal id, string s) {
+    int x = id.x, y = id.y;
+    cout << "checkAns: " << x << ' ' << y << endl;
+    for (int i = 0; i < s.size(); ++i) {
+        if (s[i] == 'L') --x;
+        if (s[i] == 'R') ++x;
+        if (s[i] == 'U') --y;
+        if (s[i] == 'D') ++y;
+        cout << x << ' ' << y << ' ' << s[i] << endl;
+        assert(x >= 0 && x < n && y >= 0 && y < m);
+    }
+}
+
 void print() {
     vector<string> ans = findAns();
  
@@ -269,7 +283,10 @@ void print() {
         ans.push_back(def);
     }
     
+    int cnt = 0;
     for (string s : ans) {
+//        checkAns(prt[cnt], s);
+        ++cnt;
         cout << s << endl;
     }
 }
