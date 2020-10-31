@@ -37,6 +37,8 @@
 #define mod (ll)(1e9 + 7)
 #define inf (mod * mod)
 
+#define int long long
+
 using namespace std;
 //using namespace __gnu_cxx;
 //using namespace __gnu_pbds;
@@ -63,21 +65,25 @@ ll id[N][N];
 void bfs(ll x, ll y, ll mx, ll idd) {
     queue<pll> q;
     vvll d(n + 1, vll(m + 1, 1e18));
-    d[x][y] = 0;
-    q.push(make_pair(x, y));
+    vvll color(n + 1, vll(m + 1, 0));
+    rep(i, 0, p) {
+        color[prt[i].x][prt[i].y] = i + 1;
+        q.push(make_pair(prt[i].x, prt[i].y));
+        d[prt[i].x][prt[i].y] = 0;
+    }
 
     while(!q.empty()) {
         auto fr = q.front();
         q.pop();
-        if (id[fr.first][fr.second] >= 0) id[fr.first][fr.second] = idd;
 
         rep(di, -1, 2) {
             rep(dj, -1, 2) {
                 if (di * di + dj * dj != 1) continue;
                 ll ni = fr.first + di;
                 ll nj = fr.second + dj;
-                if (ni >= 0 && ni < n && nj >= 0 && nj < m && id[ni][nj] >= 0) {
+                if (ni >= 0 && ni < n && nj >= 0 && nj < m && !color[ni][nj]) {
                     if (d[fr.first][fr.second] + 1 < d[ni][nj]) {
+                        color[ni][nj] = color[fr.first][fr.second];
                         d[ni][nj] = d[fr.first][fr.second] + 1;
                         if (d[ni][nj] < mx) {
                             q.push(make_pair(ni, nj));
@@ -87,13 +93,23 @@ void bfs(ll x, ll y, ll mx, ll idd) {
             }
         }
     }
+
+    rep(i, 0, n) {
+        rep(j, 0, m) {
+            if (id[i][j] != -1) {
+                id[i][j] = color[i][j];
+            }
+        }
+    }
 }
 
 void read() {
     cin >> n >> m >> k >> p;
-
+    
+    swap(n, m);
     rep(i, 0, p) {
         cin >> prt[i].x >> prt[i].y;
+        swap(prt[i].x, prt[i].y);
         id[prt[i].x][prt[i].y] = -1;
     }
 }
@@ -134,16 +150,18 @@ void findId() {
 
     if (check(l)) l++;
     check(l);
-
-
-//    cout << endl;
-//    rep(i, 0, n) {
-//        rep(j, 0, m) {
-//            cout << id[i][j] << " ";
-//        }
-//        cout << endl;
-//    }
-//    cout << endl;
+    ll test = 0;
+    if (test) {
+        cout << "l : " << l << endl;
+        cout << endl;
+        rep(i, 0, n) {
+            rep(j, 0, m) {
+                cout << id[i][j] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
 }
 
 int findValue(vector<string> &ans) {
@@ -202,7 +220,65 @@ string findWay(portal a, portal b, int portalId) {
  
     return ans;
 }
- 
+
+int idB[N][N];
+
+void fixId() {
+//    for (int i = 0; i < n; ++i) {
+//        for (int j = 0; j < m; ++j) {
+//            cout << id[i][j] << ' ';
+//        }
+//        cout << endl;
+//    } cout << endl;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            idB[i][j] = id[i][j];
+        }
+    }
+    for (int i = 0; i + 1 <= min(p, k); ++i) {
+//        cout << "deb: " << idB[prt[i].x][prt[i].y] << endl;
+        idB[prt[i].x][prt[i].y] = i + 1;
+    }
+//    for (int i = 0; i < n; ++i) {
+//        for (int j = 0; j < m; ++j) {
+//            cout << idB[i][j] << ' ';
+//        }
+//        cout << endl;
+//    } cout << endl;
+    queue<portal> q;
+    auto upd = [&](int x, int y, portal pos) {
+        if (x >= 0 && x < n && y >= 0 && y < m) {
+            if (id[x][y] > k) {
+                id[x][y] = id[pos.x][pos.y];
+                q.push({x, y});
+            }
+        }
+    };
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            if (idB[i][j] <= k && idB[i][j] != -1) {
+                q.push({i, j});
+            }
+        }
+    }
+    while (!q.empty()) {
+        auto to = q.front(); q.pop();
+        int x = to.x, y = to.y;
+//        cout << x << ' ' << y << endl;
+        portal pos = {x, y};
+        upd(x + 1, y, pos);
+        upd(x - 1, y, pos);
+        upd(x, y + 1, pos);
+        upd(x, y - 1, pos);
+    }
+//    for (int i = 0; i < n; ++i) {
+//        for (int j = 0; j < m; ++j) {
+//            cout << id[i][j] << ' ';
+//        }
+//        cout << endl;
+//    }
+}
+
 vector<string> findAns() {
     vector<string> ans;
  
@@ -237,22 +313,55 @@ vector<string> findAns() {
     return ans;
 }
 
+void checkAns(portal id, string s) {
+    int x = id.x, y = id.y;
+    cout << "checkAns: " << x << ' ' << y << endl;
+    for (int i = 0; i < s.size(); ++i) {
+        if (s[i] == 'L') --x;
+        if (s[i] == 'R') ++x;
+        if (s[i] == 'U') --y;
+        if (s[i] == 'D') ++y;
+        cout << x << ' ' << y << ' ' << s[i] << endl;
+        assert(x >= 0 && x < n && y >= 0 && y < m);
+    }
+}
+
 void print() {
     vector<string> ans = findAns();
  
+    int val = findValue(ans);
+    
     cout << findValue(ans) << endl;
  
-    for (string s : ans) {
+    string def = "";
+    for (int i = 0; i < val; ++i) {
+        def += 'W';
+    }
+    
+//    cout << ans.size() << ' ' << k << endl;
+    
+    while ((int)ans.size() < k) {
+        ans.push_back(def);
+    }
+    
+    int sz = (int)ans.size();
+    sz = min(sz, k);
+    
+    int cnt = 0;
+    for (int i = 0; i < sz; ++i) {
+        string s = ans[i];
+//        checkAns(prt[cnt], s);
+        ++cnt;
         cout << s << endl;
     }
 }
 
-int main() {
-    FILE;
+signed main() {
+    // FILE
     read();
     findId();
+    fixId();
     print();
     
     return 0;
 }
-
